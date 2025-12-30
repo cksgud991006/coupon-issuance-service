@@ -1,0 +1,6 @@
+# output files
+bin/*
+obj/*
+
+# configuration files
+Properties/#
