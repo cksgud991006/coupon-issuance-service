@@ -30,9 +30,7 @@ This project was created to practice and reinforce the following backend develop
 The application follows a layered architecture with clear separation of concerns:
 
 API (Controller)
-↓
-Application Service
-↓
-Repository (Data Access)
-↓
-Database
+→ Application Service
+→ Repository (Data Access)
+→ Database
+
