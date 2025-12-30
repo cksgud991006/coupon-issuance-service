@@ -4,3 +4,7 @@ obj/*
 
 # configuration files
 Properties/#
+
+# project files
+*.csproj
+appsettings*
