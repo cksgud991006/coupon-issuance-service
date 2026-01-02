@@ -8,3 +8,6 @@ Properties/#
 # project files
 *.csproj
 appsettings*
+
+# db files
+Migrations/*

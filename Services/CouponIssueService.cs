@@ -1,13 +1,13 @@
 using CouponServer.Repositories;
-using Domain.Coupons;
+using CouponServer.Domain.Coupons;
 
 namespace CouponServer.Services;
 
-public class CouponService
+public class CouponIssueService: ICouponService
 {
-    private readonly CouponRepository _couponRepository;
+    private readonly ICouponRepository _couponRepository;
 
-    public CouponService(CouponRepository couponRepository)
+    public CouponIssueService(ICouponRepository couponRepository)
     {
         _couponRepository = couponRepository;
     }
@@ -22,7 +22,13 @@ public class CouponService
             return CouponIssueResult.AlreadyIssued();
         }
 
-        bool issued = _couponRepository.TryIssueCoupon(userId, idempotencyKey); 
+        bool canIssue = await _couponRepository.CanIssueCoupon();
+        if (!canIssue)
+        {
+            return CouponIssueResult.InvalidId();
+        }
+
+        bool issued = await _couponRepository.TryIssueCoupon(userId, idempotencyKey); 
         if (!issued)
         {
             return CouponIssueResult.SoldOut();

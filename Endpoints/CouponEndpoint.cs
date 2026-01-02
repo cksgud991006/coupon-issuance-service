@@ -1,4 +1,6 @@
 using CouponServer.Services;
+using CouponServer.Domain.Coupons;
+using CouponServer.Dto;
 
 namespace CouponServer.Endpoints;
 
@@ -27,11 +29,23 @@ public static class CouponEndpoint
     } 
 
     private static async Task<IResult> IssueCoupon(
-        int userId,
-        string idempotencyKey,
-        CouponService service)
+        CouponIssueRequest request,
+        ICouponService service)
     {
-        await service.IssueAsync(userId, idempotencyKey);
-        return Results.Ok();
+        var result = await service.IssueAsync(request.UserId, request.IdempotencyKey);
+        return result switch
+        {
+            { IsSuccess: true } =>
+                Results.Ok(),
+
+            { FailureReason: CouponIssueFailureReason.AlreadyIssued } =>
+                Results.Conflict("Coupon already issued"),
+
+            { FailureReason: CouponIssueFailureReason.SoldOut } =>
+                Results.StatusCode(410),
+
+            _ =>
+                Results.StatusCode(500)
+        };
     }
 }

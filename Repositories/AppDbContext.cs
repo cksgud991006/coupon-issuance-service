@@ -1,11 +1,21 @@
 using Microsoft.EntityFrameworkCore;
-using Domain.Coupons;
+using CouponServer.Domain.Coupons;
+using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace CouponServer.Repositories;
 public class AppDbContext: DbContext
 {
 
     public DbSet<Coupon> Coupons { get; set; }
+    public DbSet<CouponPolicy> CouponPolicy { get; set; }
+
+    public AppDbContext(DbContextOptions<AppDbContext> options)
+        : base(options)
+    {
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -18,6 +28,15 @@ public class AppDbContext: DbContext
 
             entity.HasIndex(c => c.IdempotencyKey)
                 .IsUnique();
+        });
+
+        modelBuilder.Entity<CouponPolicy>(entity =>
+        {
+            entity.HasIndex(cp => cp.Id)
+                .IsUnique();
+
+           entity.Property(cp => cp.TotalQuantity)
+            .HasDefaultValue(1);
         });
     }
 }

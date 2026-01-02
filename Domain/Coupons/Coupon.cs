@@ -1,10 +1,10 @@
-namespace Domain.Coupons;
+namespace CouponServer.Domain.Coupons;
 
 public class Coupon
 {
     public int UserId { get; set; }
-    public int CouponId { get; set; }
-    public string IdempotencyKey { get; set; }
+    public int CouponId { get; private set; }
+    public required string IdempotencyKey { get; set; }
     
     private Coupon() { }
 
