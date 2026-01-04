@@ -12,6 +12,4 @@ public interface ICouponRepository
     public Task<bool> HasUserReceivedCoupon(string idempotencyKey);
 
     public Task<bool> TryIssueCoupon(int userId, string idempotencyKey);
-
-    public Task<bool> CanIssueCoupon();
 }

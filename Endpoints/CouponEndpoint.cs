@@ -42,7 +42,7 @@ public static class CouponEndpoint
                 Results.Conflict("Coupon already issued"),
 
             { FailureReason: CouponIssueFailureReason.SoldOut } =>
-                Results.StatusCode(410),
+                Results.Conflict("Coupon sold out"),
 
             _ =>
                 Results.StatusCode(500)

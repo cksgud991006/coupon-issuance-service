@@ -22,12 +22,6 @@ public class CouponIssueService: ICouponService
             return CouponIssueResult.AlreadyIssued();
         }
 
-        bool canIssue = await _couponRepository.CanIssueCoupon();
-        if (!canIssue)
-        {
-            return CouponIssueResult.InvalidId();
-        }
-
         bool issued = await _couponRepository.TryIssueCoupon(userId, idempotencyKey); 
         if (!issued)
         {

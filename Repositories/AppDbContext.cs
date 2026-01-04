@@ -4,6 +4,8 @@ using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Xml;
+using System.Net.Http.Headers;
 
 namespace CouponServer.Repositories;
 public class AppDbContext: DbContext
@@ -35,8 +37,13 @@ public class AppDbContext: DbContext
             entity.HasIndex(cp => cp.Id)
                 .IsUnique();
 
-           entity.Property(cp => cp.TotalQuantity)
-            .HasDefaultValue(1);
+            entity.Property(cp => cp.TotalQuantity)
+                .IsRequired()
+                .HasDefaultValue(1000);
+
+            entity.Property(cp => cp.IssuedCoupons)
+                .IsRequired()
+                .HasDefaultValue(0);
         });
     }
 }

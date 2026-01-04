@@ -17,5 +17,15 @@ public static class DbInitializer
             context.CouponPolicy.Add(CouponPolicy.CreateDefault());
             context.SaveChanges();
         }
+
+        else
+        {
+            context.CouponPolicy.ExecuteUpdate(p =>
+                p.SetProperty(
+                    x => x.IssuedCoupons,
+                    x => context.Coupons.Count()
+                )
+            );
+        }
     }
 }

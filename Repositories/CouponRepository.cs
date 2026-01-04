@@ -1,16 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using CouponServer.Domain.Coupons;
-using System.Security.Cryptography.X509Certificates;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
-using Microsoft.VisualBasic;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.Serialization.Formatters;
-using System.Diagnostics.CodeAnalysis;
 using System.Data.SqlTypes;
-using System.Security.Cryptography;
 
 namespace CouponServer.Repositories;
 
@@ -34,19 +24,20 @@ public class CouponRepository : ICouponRepository
     {
         var coupon = Coupon.Create(userId, idempotencyKey);
         _context.Coupons.Add(coupon);
+
+        var affected = await _context.CouponPolicy
+            .Where(p => p.IssuedCoupons < p.TotalQuantity)
+            .ExecuteUpdateAsync(p =>
+                p.SetProperty(
+                    x => x.IssuedCoupons,
+                    x => x.IssuedCoupons + 1
+                )
+            );
+
+        if (affected == 0)
+            return false;
         
-        return await _context.SaveChangesAsync() > 0;
-    }
-
-    public async Task<bool> CanIssueCoupon()
-    {
-        var issued = await _context.Coupons.CountAsync();
-        var limit = await _context.CouponPolicy
-            .Select(cp => cp.TotalQuantity)
-            .SingleAsync();
-
-        if (issued >= limit) return false;
-
+        await _context.SaveChangesAsync();
         return true;
     }
 }
