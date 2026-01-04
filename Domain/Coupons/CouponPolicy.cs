@@ -15,7 +15,7 @@ public class CouponPolicy
     public static CouponPolicy CreateDefault()
         => new CouponPolicy 
         {
-            TotalQuantity = 1,
+            TotalQuantity = 1000,
             IssuedCoupons = 0
         };
 }
